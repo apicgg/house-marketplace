@@ -11,5 +11,5 @@ The listings use Google geocoding to get the coords from the address field. You 
 ### Run
 
 ```bash
-npm run dev
+npm start
 ```
