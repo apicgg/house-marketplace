@@ -47,7 +47,7 @@ function SignIn() {
               placeholder='Password'
               id='password'
               value={password}
-              onChange={onchange}
+              onChange={onChange}
             />
             <img
               src={visibilityIcon}
