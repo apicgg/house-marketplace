@@ -46,7 +46,7 @@ function SignIn() {
               className='passwordInput'
               placeholder='Password'
               id='password'
-              defaultValue={password}
+              value={password}
               onChange={onchange}
             />
             <img
