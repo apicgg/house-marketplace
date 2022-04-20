@@ -10,7 +10,7 @@ import SignUp from './pages/SignUp'
 import PrivateRoute from './components/PrivateRoute'
 import ForgotPassword from './pages/ForgotPassword'
 
-function App() {
+const App = () => {
   return (
     <>
       <Router>
