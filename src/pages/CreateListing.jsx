@@ -15,7 +15,7 @@ import Spinner from '../components/Spinner'
 
 function CreateListing() {
   // eslint-disable-next-line
-  const [geolocationEnabled, setGeolocationEnabled] = useState(false)
+  const [geolocationEnabled, setGeolocationEnabled] = useState(true)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     type: 'rent',
@@ -92,24 +92,28 @@ function CreateListing() {
 
     if (geolocationEnabled) {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${process.env.REACT_APP_GEOCODE_API_KEY}`
+        `http://api.positionstack.com/v1/forward?access_key=${process.env.REACT_APP_GEOCODE_API_KEY}&query=${address}`
       )
 
-      const data = await response.json()
+      const result = await response.json()
 
-      geolocation.lat = data.results[0]?.geometry.location.lat ?? 0
-      geolocation.lng = data.results[0]?.geometry.location.lng ?? 0
+      // console.log(data)
 
-      location =
-        data.status === 'ZERO_RESULTS'
-          ? undefined
-          : data.results[0]?.formatted_address
+      geolocation.lat = result.data[0].latitude
+      geolocation.lng = result.data[0].longitude
+      // console.log(geolocation.lat)
+      // geolocation.lng = data.results[0]?.geometry.location.lng ?? 0
 
-      if (location === undefined || location.includes('undefined')) {
-        setLoading(false)
-        toast.error('Please enter a correct address')
-        return
-      }
+      // location =
+      //   data.status === 'ZERO_RESULTS'
+      //     ? undefined
+      //     : data.results[0]?.formatted_address
+
+      // if (location === undefined || location.includes('undefined')) {
+      //   setLoading(false)
+      //   toast.error('Please enter a correct address')
+      //   return
+      // }
     } else {
       geolocation.lat = latitude
       geolocation.lng = longitude
