@@ -76,6 +76,6 @@ const Slider = () => {
   )
 }
 
-//demo sign
+//demo sign again
 
 export default Slider
