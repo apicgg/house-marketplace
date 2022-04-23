@@ -6,6 +6,7 @@ import { db } from '../firebase.config'
 import { toast } from 'react-toastify'
 import arrowRight from '../assets/svg/keyboardArrowRightIcon.svg'
 import homeIcon from '../assets/svg/homeIcon.svg'
+import HomeSlider from '../components/HomeSlider'
 
 const Profile = () => {
   const auth = getAuth()
@@ -54,6 +55,8 @@ const Profile = () => {
 
   return (
     <div className='profile'>
+      <HomeSlider />
+
       <header className='profileHeader'>
         <p className='pageHeader'>My Profile</p>
         <button className='logOut' type='button' onClick={onLogout}>
