@@ -54,6 +54,7 @@ function CreateListing() {
   const isMounted = useRef(true)
 
   useEffect(() => {
+    // isMounted has been used to avoid mem leak error
     if (isMounted) {
       onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -98,8 +99,8 @@ function CreateListing() {
 
       // console.log(data)
 
-      geolocation.lat = result.data[0].latitude
-      geolocation.lng = result.data[0].longitude
+      geolocation.lat = result.data[0]?.latitude
+      geolocation.lng = result.data[0]?.longitude
       // console.log(geolocation.lat)
       // geolocation.lng = data.results[0]?.geometry.location.lng ?? 0
 
@@ -167,6 +168,7 @@ function CreateListing() {
       return
     })
 
+    // To upload to database from storage
     const formDataCopy = {
       ...formData,
       imageUrls,
