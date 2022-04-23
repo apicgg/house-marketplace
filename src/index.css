@@ -619,7 +619,9 @@ button {
   align-items: center;
 }
 
-.logOut {
+.logOut,
+.delete,
+.edit {
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
@@ -628,6 +630,11 @@ button {
   background-color: #00cc66;
   padding: 0.25rem 0.75rem;
   border-radius: 1rem;
+}
+
+.delete,
+.edit {
+  margin-top: 0.5rem;
 }
 
 .profileDetailsHeader {

@@ -17,6 +17,7 @@ import ListingItem from '../components/ListingItem'
 const Category = () => {
   const [listings, setListings] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [lastFetchedListing, setLastFetchedListing] = useState(null)
 
   const params = useParams()
 
@@ -24,11 +25,11 @@ const Category = () => {
     const fetchListings = async () => {
       try {
         // get ref
-        const listingRef = collection(db, 'listings')
+        const listingsRef = collection(db, 'listings')
 
         // create query
         const q = query(
-          listingRef,
+          listingsRef,
           where('type', '==', params.categoryName),
           orderBy('timestamp', 'desc'),
           limit(10)
@@ -36,6 +37,9 @@ const Category = () => {
 
         // execute query
         const querySnap = await getDocs(q)
+
+        const lastVisible = querySnap.docs[querySnap.docs.length - 1]
+        setLastFetchedListing(lastVisible)
 
         const listings = []
 
@@ -54,7 +58,46 @@ const Category = () => {
     }
 
     fetchListings()
-  })
+  }, [params.categoryName])
+
+  // pagination or load more
+  const onFetchMoreListings = async () => {
+    try {
+      // get ref
+      const listingsRef = collection(db, 'listings')
+
+      // create query
+      const q = query(
+        listingsRef,
+        where('type', '==', params.categoryName),
+        orderBy('timestamp', 'desc'),
+        startAfter(lastFetchedListing),
+        limit(10)
+      )
+
+      // execute query
+      const querySnap = await getDocs(q)
+
+      const lastVisible = querySnap.docs[querySnap.docs.length - 1]
+      setLastFetchedListing(lastVisible)
+
+      const listings = []
+
+      querySnap.forEach((doc) => {
+        return listings.push({
+          id: doc.id,
+          data: doc.data(),
+        })
+      })
+
+      setListings((prevState) => [...prevState, ...listings])
+      setLoading(false)
+    } catch (error) {
+      toast.error('Could not fetch listings')
+    }
+  }
+
+  // TODO Disable show more after all the listings are rendered
 
   return (
     <div className='category'>
@@ -70,15 +113,25 @@ const Category = () => {
         <Spinner />
       ) : listings && listings.length > 0 ? (
         <>
-          <ul className='categoryListings'>
-            {listings.map((listing) => (
-              <ListingItem
-                listing={listing.data}
-                id={listing.id}
-                key={listing.id}
-              />
-            ))}
-          </ul>
+          <main>
+            <ul className='categoryListings'>
+              {listings.map((listing) => (
+                <ListingItem
+                  listing={listing.data}
+                  id={listing.id}
+                  key={listing.id}
+                />
+              ))}
+            </ul>
+          </main>
+
+          <br />
+          <br />
+          {lastFetchedListing && (
+            <p className='loadMore' onClick={onFetchMoreListings}>
+              Show More
+            </p>
+          )}
         </>
       ) : (
         <p>No listings for {params.categoryName}</p>

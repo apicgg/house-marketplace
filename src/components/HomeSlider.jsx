@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { collection, getDocs, query, where, limit } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  orderBy,
+  deleteDoc,
+} from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
 import { db } from '../firebase.config'
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper'
@@ -20,7 +28,11 @@ const HomeSlider = () => {
   useEffect(() => {
     const fetchListings = async () => {
       const listingsRef = collection(db, 'listings')
-      const q = query(listingsRef, where('userRef', '==', user.uid), limit(5))
+      const q = query(
+        listingsRef,
+        where('userRef', '==', user.uid),
+        orderBy('timestamp', 'desc')
+      )
       const querySnap = await getDocs(q)
 
       let listings = []
@@ -46,6 +58,13 @@ const HomeSlider = () => {
   if (listings.length === 0) {
     return <></>
   }
+
+  const onDelete = () => {
+    const docRef = doc(db, 'listings', 'id')
+    console.log(docRef)
+  }
+
+  const onEdit = (params) => {}
 
   return (
     listings && (
@@ -74,6 +93,15 @@ const HomeSlider = () => {
             </SwiperSlide>
           ))}
         </Swiper>
+
+        <div className='profileHeader'>
+          <button className='delete' type='button' onClick={onDelete}>
+            Delete
+          </button>
+          <button className='edit' type='button' onClick={onEdit}>
+            Edit
+          </button>
+        </div>
       </>
     )
   )
